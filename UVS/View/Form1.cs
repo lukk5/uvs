@@ -34,7 +34,7 @@ namespace UVS
 
             if (thcount != 0)
             {
-               _computing.Execute(thcount,this);  
+               _computing.Execute(thcount, listView1);  
             }
         }
 

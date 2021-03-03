@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Windows.Forms;
 using UVS.Logic;
 
 namespace UVS
@@ -18,7 +19,7 @@ namespace UVS
 
         }
 
-        private void Compute(Main main)
+        private void Compute(ListView listView)
         {
             while (true)
             {
@@ -34,7 +35,24 @@ namespace UVS
 
                 var result = RandomString(stringsize, rnd);
 
-                main.UpdateUI(result, id);
+                string[] row = { result, id.ToString() };
+
+                ListViewItem item = new ListViewItem(row);
+
+                if (listView.InvokeRequired)
+                {
+                    listView.Invoke(new MethodInvoker(delegate
+                    {
+
+                        listView.Items.Add(item);
+
+                    }));
+                }
+                else
+                {
+                    listView.Items.Add(item);
+
+                }
             }
         }
 
@@ -43,13 +61,13 @@ namespace UVS
             StopThreads();
         }
 
-        private bool CreateThreadList(int threadcount, Main main)
+        private bool CreateThreadList(int threadcount, ListView listView)
         {
             try
             {
                 for (int i = 0; i < threadcount; i++)
                 {
-                    Thread thread = new Thread(() => Compute(main));
+                    Thread thread = new Thread(() => Compute(listView));
                     threads.Add(thread);
                 }
             }
@@ -66,9 +84,9 @@ namespace UVS
         }
 
 
-        public void Execute(int threadcount, Main main)
+        public void Execute(int threadcount, ListView listView)
         {
-            if(CreateThreadList(threadcount, main))
+            if(CreateThreadList(threadcount, listView))
             {
                 StartThreads();
             }

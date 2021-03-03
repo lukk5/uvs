@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace UVS.Logic
 {
     interface IComputing
     {
-        void Execute(int threadcount,Main main);
+        void Execute(int threadcount, ListView listView);
 
         void Stop();
 
