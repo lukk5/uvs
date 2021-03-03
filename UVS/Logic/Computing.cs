@@ -11,15 +11,14 @@ namespace UVS
     class Computing : IComputing
     {
         
-        List<Thread> threads = new List<Thread>();
+        private readonly List<Thread> _threadPool = new List<Thread>();
 
         public Computing()
         {
             
 
         }
-
-        private void Compute(ListView listView)
+        private IEnumerable<string> Compute(ListView listView)
         {
             while (true)
             {
@@ -33,25 +32,30 @@ namespace UVS
 
                 Thread.Sleep(sleeptime);
 
-                var result = RandomString(stringsize, rnd);
+                yield return RandomString(stringsize, rnd);
 
-                string[] row = { result, id.ToString() };
+            }
+        }
+        private void ExecuteThread(ListView listView)
+        {
+            var id = Thread.CurrentThread.ManagedThreadId.ToString();
 
-                ListViewItem item = new ListViewItem(row);
+            foreach (var result in Compute(listView))
+            {
+                string[] row = {id, result};
+
+                var item = new ListViewItem(row);
 
                 if (listView.InvokeRequired)
                 {
                     listView.Invoke(new MethodInvoker(delegate
                     {
-
                         listView.Items.Add(item);
-
                     }));
                 }
                 else
                 {
                     listView.Items.Add(item);
-
                 }
             }
         }
@@ -67,15 +71,25 @@ namespace UVS
             {
                 for (int i = 0; i < threadcount; i++)
                 {
-                    Thread thread = new Thread(() => Compute(listView));
-                    threads.Add(thread);
+                    var thread = _threadPool.ElementAtOrDefault(threadcount);
+                    if (thread != null)
+                    {
+                        thread.Start();
+                        continue;
+                    }    
+
+                    thread = new Thread(() =>
+                    {
+                        ExecuteThread(listView);
+                    });
+                    _threadPool.Add(thread);
                 }
             }
             catch (Exception) {
                 return false;
             }
 
-            if(threads.Count==0)
+            if(_threadPool.Count==0)
             {
                 return false;
             }
@@ -97,7 +111,7 @@ namespace UVS
         {
             try
             {
-                foreach (var thread in threads)
+                foreach (var thread in _threadPool)
                 {
                     thread.Start();
                 }
@@ -107,7 +121,7 @@ namespace UVS
 
         public void StopThreads()
         {
-            foreach (var thread in threads)
+            foreach (var thread in _threadPool)
             {
                 try
                 {
@@ -119,7 +133,7 @@ namespace UVS
                 }
             }
 
-            threads.Clear();
+            _threadPool.Clear();
         }
         public  string RandomString(int length, Random rnd)
         {

@@ -42,8 +42,6 @@ namespace UVS
         {
             _computing.Stop();
 
-            _computing = null;
-
         }
 
         private int GetThreadCount()
@@ -60,27 +58,6 @@ namespace UVS
         private void button2_Click(object sender, EventArgs e)
         {
             Stop();
-        }
-        public void UpdateUI(string text, int threadumber)
-        {
-            String[] row = { text, threadumber.ToString() };
-
-            ListViewItem item = new ListViewItem(row);
-
-            if (listView1.InvokeRequired)
-            {
-                listView1.Invoke(new MethodInvoker(delegate
-                {
-
-                    listView1.Items.Add(item);
-               
-                }));
-            }
-            else
-            {
-                listView1.Items.Add(item);
-               
-            }
         }
     }
 }
