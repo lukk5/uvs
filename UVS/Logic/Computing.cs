@@ -18,17 +18,16 @@ namespace UVS
             
 
         }
-        private IEnumerable<string> Compute(ListView listView)
+        private IEnumerable<string> Compute()
         {
             while (true)
             {
-                var id = Thread.CurrentThread.ManagedThreadId;
 
                 var rnd = new Random(Guid.NewGuid().GetHashCode());
 
-                int sleeptime = rnd.Next(500, 2000);
+                var sleeptime = rnd.Next(500, 2000);
 
-                int stringsize = rnd.Next(5, 10);
+                var stringsize = rnd.Next(5, 10);
 
                 Thread.Sleep(sleeptime);
 
@@ -40,7 +39,7 @@ namespace UVS
         {
             var id = Thread.CurrentThread.ManagedThreadId.ToString();
 
-            foreach (var result in Compute(listView))
+            foreach (var result in Compute())
             {
                 string[] row = {id, result};
 
@@ -60,21 +59,22 @@ namespace UVS
             }
         }
 
-        public void Stop()
+        public bool Stop()
         {
-            StopThreads();
+            return StopThreads();
         }
 
+  
         private bool CreateThreadList(int threadcount, ListView listView)
         {
             try
             {
-                for (int i = 0; i < threadcount; i++)
+                for (var i = 0; i < threadcount; i++)
                 {
-                    var thread = _threadPool.ElementAtOrDefault(threadcount);
-                    if (thread != null)
+                    var thread = _threadPool.ElementAtOrDefault(i);
+                    if (thread != null && thread.ThreadState == ThreadState.Suspended)
                     {
-                        thread.Start();
+                        thread.Resume();
                         continue;
                     }    
 
@@ -89,22 +89,21 @@ namespace UVS
                 return false;
             }
 
-            if(_threadPool.Count==0)
-            {
-                return false;
-            }
-
-            return true;
+            return _threadPool.Count != 0;
         }
 
 
-        public void Execute(int threadcount, ListView listView)
+        public bool Execute(int threadcount, ListView listView)
         {
             if(CreateThreadList(threadcount, listView))
             {
                 StartThreads();
+            } 
+            else
+            {
+                return false;
             }
-            
+            return true;
         }
 
         private void StartThreads()
@@ -116,24 +115,49 @@ namespace UVS
                     thread.Start();
                 }
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
-        public void StopThreads()
+        public void DeleteThreads()
         {
+
             foreach (var thread in _threadPool)
             {
                 try
                 {
+                    if(thread.ThreadState == ThreadState.Suspended)
+                    {
+                        thread.Resume();
+                    }
                     thread.Abort();
                 }
                 catch (ThreadAbortException)
                 {
 
                 }
+
+            }
+            _threadPool.Clear();
+        }
+
+        public bool StopThreads()
+        {
+            foreach (var thread in _threadPool)
+            {
+                try
+                {
+                   thread.Suspend();      
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
 
-            _threadPool.Clear();
+            return true;
         }
         public  string RandomString(int length, Random rnd)
         {

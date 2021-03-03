@@ -11,13 +11,15 @@ namespace UVS
 
         private IComputing _computing = new Computing();
 
+        private bool _started;
+
         public Main()
         {
             InitializeComponent();
-            SetUI();
+            SetUi();
         }
 
-        private void SetUI()
+        private void SetUi()
         {
             threadcount.SelectedIndex = 0;
 
@@ -30,18 +32,25 @@ namespace UVS
 
         private void Start()
         {
-            var thcount = GetThreadCount();
-
-            if (thcount != 0)
+            if(_started)
             {
-               _computing.Execute(thcount, listView1);  
+                return;
+            }
+
+            var count = GetThreadCount();
+
+            if (count != 0)
+            {
+              _started = _computing.Execute(count, listView1);
             }
         }
 
         private void Stop()
         {
-            _computing.Stop();
-
+            if (_computing.Stop())
+            {
+                _started = false;
+            }
         }
 
         private int GetThreadCount()
@@ -52,12 +61,18 @@ namespace UVS
 
         private void button1_Click(object sender, EventArgs e)
         {
-             Start();  
+            Start();  
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             Stop();
+        }
+
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _computing.DeleteThreads();
+            _computing = null;
         }
     }
 }

@@ -9,9 +9,11 @@ namespace UVS.Logic
 {
     interface IComputing
     {
-        void Execute(int threadcount, ListView listView);
+        bool Execute(int threadcount, ListView listView);
 
-        void Stop();
+        bool Stop();
+
+        void DeleteThreads();
 
     }
 }
