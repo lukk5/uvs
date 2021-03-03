@@ -13,11 +13,6 @@ namespace UVS
         
         private readonly List<Thread> _threadPool = new List<Thread>();
 
-        public Computing()
-        {
-            
-
-        }
         private IEnumerable<string> Compute()
         {
             while (true)
@@ -64,7 +59,6 @@ namespace UVS
             return StopThreads();
         }
 
-  
         private bool CreateThreadList(int threadcount, ListView listView)
         {
             try
@@ -92,7 +86,6 @@ namespace UVS
             return _threadPool.Count != 0;
         }
 
-
         public bool Execute(int threadcount, ListView listView)
         {
             if(CreateThreadList(threadcount, listView))
@@ -103,6 +96,7 @@ namespace UVS
             {
                 return false;
             }
+
             return true;
         }
 
@@ -149,7 +143,7 @@ namespace UVS
             {
                 try
                 {
-                   thread.Suspend();      
+                    thread?.Suspend();
                 }
                 catch (Exception)
                 {
