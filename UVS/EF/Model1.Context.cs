@@ -25,6 +25,6 @@ namespace UVS.EF
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<UV> UVS { get; set; }
+        public virtual DbSet<UVS> UVS { get; set; }
     }
 }

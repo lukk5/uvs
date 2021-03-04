@@ -35,9 +35,9 @@ namespace UVS
                     using (var context = new UVSEntities())
                     {
 
-                        var row = new UV()
+                        var row = new EF.UVS()
                         {
-                            THREADID = Thread.CurrentThread.ManagedThreadId,
+                            Threadid = Thread.CurrentThread.ManagedThreadId,
                             Time = TimeSpan.FromMilliseconds(sleeptime),
                             Date = DateTime.Now
                         };
@@ -132,7 +132,7 @@ namespace UVS
         {
             try
             {
-                foreach (var thread in _threadPool)
+                foreach (var thread in _threadPool.Where(thread => thread.ThreadState == ThreadState.Unstarted))
                 {
                     thread?.Start();
                 }
@@ -145,14 +145,11 @@ namespace UVS
 
         public bool Resume()
         {
-            foreach (var thread in _threadPool)
-            {
-                try
-                {
-                    if (thread.ThreadState == ThreadState.Suspended)
+               try {
+
+                    foreach (var thread in _threadPool.Where(thread => thread.ThreadState == ThreadState.Suspended))
                     {
                         thread?.Resume();
-                      
                     }
                 }
                 catch (Exception)
@@ -160,11 +157,8 @@ namespace UVS
                     return false;
                 }
 
-            }
-
             return true;
         }
-
         public bool Suspend()
         {
             foreach (var thread in _threadPool)
@@ -184,6 +178,11 @@ namespace UVS
 
         public bool StopThreads()
         {
+            if (_threadPool.Count == 0)
+            {
+                return true;
+            }
+
             foreach (var thread in _threadPool)
             {
                 try
