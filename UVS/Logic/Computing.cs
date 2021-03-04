@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Windows.Forms;
 using UVS.EF;
@@ -79,8 +78,8 @@ namespace UVS
                 }
                 else
                 {
-                    listView.Items.Insert(0,item); // sortina i virsu
-                    if (listView.Items.Count == 11) // kad rodytu tik 10 naujiausiu 
+                    listView.Items.Insert(0,item); // sortina nuo naujausio
+                    if (listView.Items.Count == 11) // kad rodytu tik 10 naujausiu 
                     {
                         listView.Items.RemoveAt(10);
                     }
@@ -145,35 +144,38 @@ namespace UVS
 
         public bool Resume()
         {
-               try {
-
-                    foreach (var thread in _threadPool.Where(thread => thread.ThreadState == ThreadState.Suspended))
-                    {
-                        thread?.Resume();
-                    }
-                }
-                catch (Exception)
+            try
+            {
+                foreach (var thread in _threadPool)
                 {
-                    return false;
+                    thread?.Resume();
                 }
+
+            }
+            catch
+            {
+                return false;
+            }
 
             return true;
         }
         public bool Suspend()
         {
-            foreach (var thread in _threadPool)
+            try
             {
-                try
+                foreach (var thread in _threadPool)
                 {
-                    thread?.Suspend();
-                }
-                catch (Exception)
-                {
-                    return false;
+                   
+                   thread?.Suspend();
+                   
                 }
             }
-            return true;
+            catch (Exception)
+            {
+                return false;
+            }
 
+            return true;
         }
 
         public bool StopThreads()
