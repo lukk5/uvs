@@ -43,6 +43,10 @@ namespace UVS
             {
               _started = _computing.Execute(count, listView1);
             }
+
+            btnstart.Enabled = false;
+            btnsuspend.Enabled = true;
+
         }
 
         private void Stop()
@@ -51,12 +55,49 @@ namespace UVS
             {
                 _started = false;
             }
+
+            btnstart.Enabled = true;
+            tbnresume.Enabled = false;
+            btnsuspend.Enabled = false;
         }
 
         private int GetThreadCount()
         {
             var s = threadcount.Text;
+
+            var count = int.Parse(s);
+
+            if (count > 15 || count <= 0)
+            {
+                MessageBox.Show("Thread count is not valid", "Error");
+                return 0;
+            }
+
+
             return int.Parse(s);
+        }
+
+        private void Resume()
+        {
+            if (_computing.Resume())
+            {
+                _started = true;
+            }
+
+            btnsuspend.Enabled = true;
+            tbnresume.Enabled = false;
+        }
+
+        private void Suspend()
+        {
+            if (_computing.Suspend())
+            {
+                _started = false;
+            }
+
+            tbnresume.Enabled = true;
+            btnstart.Enabled = false;
+            btnsuspend.Enabled = false;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -71,8 +112,18 @@ namespace UVS
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _computing.DeleteThreads();
+            _computing.Stop();
             _computing = null;
+        }
+
+        private void tbnresume_Click(object sender, EventArgs e)
+        {
+            Resume();
+        }
+
+        private void btnsuspend_Click(object sender, EventArgs e)
+        {
+            Suspend();
         }
     }
 }

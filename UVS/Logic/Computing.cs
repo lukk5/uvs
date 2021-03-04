@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Windows.Forms;
+using UVS.EF;
 using UVS.Logic;
 
 namespace UVS
@@ -18,6 +19,7 @@ namespace UVS
             while (true)
             {
 
+
                 var rnd = new Random(Guid.NewGuid().GetHashCode());
 
                 var sleeptime = rnd.Next(500, 2000);
@@ -26,7 +28,29 @@ namespace UVS
 
                 Thread.Sleep(sleeptime);
 
-                yield return RandomString(stringsize, rnd);
+                var result = RandomString(stringsize, rnd);
+
+                try
+                {
+                    using (var context = new UVSEntities())
+                    {
+
+                        var row = new UV()
+                        {
+                            THREADID = Thread.CurrentThread.ManagedThreadId,
+                            Time = TimeSpan.FromMilliseconds(sleeptime),
+                            Date = DateTime.Now
+                        };
+                        context.UVS.Add(row);
+                        context.SaveChanges();
+                    }
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+
+                yield return result;
 
             }
         }
@@ -44,12 +68,22 @@ namespace UVS
                 {
                     listView.Invoke(new MethodInvoker(delegate
                     {
-                        listView.Items.Add(item);
+                        listView.Items.Insert(0, item);
+
+                        if (listView.Items.Count == 11)
+                        {
+                            listView.Items.RemoveAt(10);
+                        }
+
                     }));
                 }
                 else
                 {
-                    listView.Items.Add(item);
+                    listView.Items.Insert(0,item); // sortina i virsu
+                    if (listView.Items.Count == 11) // kad rodytu tik 10 naujiausiu 
+                    {
+                        listView.Items.RemoveAt(10);
+                    }
                 }
             }
         }
@@ -65,14 +99,8 @@ namespace UVS
             {
                 for (var i = 0; i < threadcount; i++)
                 {
-                    var thread = _threadPool.ElementAtOrDefault(i);
-                    if (thread != null && thread.ThreadState == ThreadState.Suspended)
-                    {
-                        thread.Resume();
-                        continue;
-                    }    
 
-                    thread = new Thread(() =>
+                    var thread = new Thread(() =>
                     {
                         ExecuteThread(listView);
                     });
@@ -106,7 +134,7 @@ namespace UVS
             {
                 foreach (var thread in _threadPool)
                 {
-                    thread.Start();
+                    thread?.Start();
                 }
             }
             catch (Exception)
@@ -115,29 +143,29 @@ namespace UVS
             }
         }
 
-        public void DeleteThreads()
+        public bool Resume()
         {
-
             foreach (var thread in _threadPool)
             {
                 try
                 {
-                    if(thread.ThreadState == ThreadState.Suspended)
+                    if (thread.ThreadState == ThreadState.Suspended)
                     {
-                        thread.Resume();
+                        thread?.Resume();
+                      
                     }
-                    thread.Abort();
                 }
-                catch (ThreadAbortException)
+                catch (Exception)
                 {
-
+                    return false;
                 }
 
             }
-            _threadPool.Clear();
+
+            return true;
         }
 
-        public bool StopThreads()
+        public bool Suspend()
         {
             foreach (var thread in _threadPool)
             {
@@ -150,7 +178,29 @@ namespace UVS
                     return false;
                 }
             }
+            return true;
 
+        }
+
+        public bool StopThreads()
+        {
+            foreach (var thread in _threadPool)
+            {
+                try
+                {
+                    if (thread.ThreadState == ThreadState.Suspended)
+                    {
+                        thread?.Resume();
+                    }
+
+                    thread?.Abort();
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            _threadPool.Clear();
             return true;
         }
         public  string RandomString(int length, Random rnd)

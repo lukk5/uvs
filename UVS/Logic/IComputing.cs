@@ -13,7 +13,8 @@ namespace UVS.Logic
 
         bool Stop();
 
-        void DeleteThreads();
+        bool Resume();
 
+        bool Suspend();
     }
 }

@@ -34,6 +34,8 @@ namespace UVS
             this.btnstart = new System.Windows.Forms.Button();
             this.btnstop = new System.Windows.Forms.Button();
             this.listView1 = new System.Windows.Forms.ListView();
+            this.tbnresume = new System.Windows.Forms.Button();
+            this.btnsuspend = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // threadcount
@@ -53,7 +55,7 @@ namespace UVS
             "12",
             "14",
             "15"});
-            this.threadcount.Location = new System.Drawing.Point(93, 24);
+            this.threadcount.Location = new System.Drawing.Point(93, 14);
             this.threadcount.Name = "threadcount";
             this.threadcount.Size = new System.Drawing.Size(121, 21);
             this.threadcount.TabIndex = 3;
@@ -61,7 +63,7 @@ namespace UVS
             // t
             // 
             this.t.AutoSize = true;
-            this.t.Location = new System.Drawing.Point(16, 27);
+            this.t.Location = new System.Drawing.Point(16, 16);
             this.t.Name = "t";
             this.t.Size = new System.Drawing.Size(74, 13);
             this.t.TabIndex = 1;
@@ -69,7 +71,7 @@ namespace UVS
             // 
             // btnstart
             // 
-            this.btnstart.Location = new System.Drawing.Point(220, 22);
+            this.btnstart.Location = new System.Drawing.Point(220, 14);
             this.btnstart.Name = "btnstart";
             this.btnstart.Size = new System.Drawing.Size(75, 23);
             this.btnstart.TabIndex = 0;
@@ -79,7 +81,7 @@ namespace UVS
             // 
             // btnstop
             // 
-            this.btnstop.Location = new System.Drawing.Point(301, 22);
+            this.btnstop.Location = new System.Drawing.Point(220, 39);
             this.btnstop.Name = "btnstop";
             this.btnstop.Size = new System.Drawing.Size(75, 23);
             this.btnstop.TabIndex = 1;
@@ -93,15 +95,39 @@ namespace UVS
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(12, 68);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(397, 399);
+            this.listView1.Size = new System.Drawing.Size(397, 211);
             this.listView1.TabIndex = 2;
             this.listView1.UseCompatibleStateImageBehavior = false;
+            // 
+            // tbnresume
+            // 
+            this.tbnresume.Enabled = false;
+            this.tbnresume.Location = new System.Drawing.Point(301, 14);
+            this.tbnresume.Name = "tbnresume";
+            this.tbnresume.Size = new System.Drawing.Size(75, 23);
+            this.tbnresume.TabIndex = 4;
+            this.tbnresume.Text = "&Resume";
+            this.tbnresume.UseVisualStyleBackColor = true;
+            this.tbnresume.Click += new System.EventHandler(this.tbnresume_Click);
+            // 
+            // btnsuspend
+            // 
+            this.btnsuspend.Enabled = false;
+            this.btnsuspend.Location = new System.Drawing.Point(301, 39);
+            this.btnsuspend.Name = "btnsuspend";
+            this.btnsuspend.Size = new System.Drawing.Size(75, 23);
+            this.btnsuspend.TabIndex = 5;
+            this.btnsuspend.Text = "&Suspend";
+            this.btnsuspend.UseVisualStyleBackColor = true;
+            this.btnsuspend.Click += new System.EventHandler(this.btnsuspend_Click);
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(421, 479);
+            this.ClientSize = new System.Drawing.Size(421, 290);
+            this.Controls.Add(this.btnsuspend);
+            this.Controls.Add(this.tbnresume);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.btnstop);
             this.Controls.Add(this.btnstart);
@@ -126,6 +152,8 @@ namespace UVS
         private System.Windows.Forms.Button btnstart;
         private System.Windows.Forms.Button btnstop;
         private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.Button tbnresume;
+        private System.Windows.Forms.Button btnsuspend;
     }
 }
 
