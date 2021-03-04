@@ -29,18 +29,19 @@ namespace UVS
 
                 try
                 {
-                    using (var context = new UVSEntities())
+                    using (var context = new UVSEntities1())
                     {
 
-                        var row = new EF.UVS()
+                        var row = new UV()
                         {
-                            Threadid = Thread.CurrentThread.ManagedThreadId,
+                            THREADID = Thread.CurrentThread.ManagedThreadId,
                             Time = TimeSpan.FromMilliseconds(sleeptime),
                             Date = DateTime.Now
                         };
                         context.UVS.Add(row);
                         context.SaveChanges();
                     }
+
                 }
                 catch (Exception)
                 {

@@ -31,7 +31,7 @@
           <Property Name="Time" Type="Time" Precision="7" />
           <Property Name="Date" Type="DateTime" Precision="0" />
         </EntityType>
-        <EntityContainer Name="UVSEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="UVSEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="UVS" EntityType="Self.UV" />
         </EntityContainer>
       </Schema>
@@ -39,7 +39,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="UVSModelStoreContainer" CdmEntityContainer="UVSEntities">
+        <EntityContainerMapping StorageEntityContainer="UVSModelStoreContainer" CdmEntityContainer="UVSEntities1">
           <EntitySetMapping Name="UVS">
             <EntityTypeMapping TypeName="UVSModel.UV">
               <MappingFragment StoreEntitySet="UVS">
