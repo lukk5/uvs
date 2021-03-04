@@ -68,9 +68,9 @@ namespace UVS
                     {
                         listView.Items.Insert(0, item);
 
-                        if (listView.Items.Count == 11)
+                        if (listView.Items.Count == 21)
                         {
-                            listView.Items.RemoveAt(10);
+                            listView.Items.RemoveAt(20);
                         }
 
                     }));
@@ -78,9 +78,9 @@ namespace UVS
                 else
                 {
                     listView.Items.Insert(0,item); // sortina nuo naujausio
-                    if (listView.Items.Count == 11) // kad rodytu tik 10 naujausiu 
+                    if (listView.Items.Count == 21) // kad rodytu tik 20 naujausiu 
                     {
-                        listView.Items.RemoveAt(10);
+                        listView.Items.RemoveAt(20);
                     }
                 }
             }
