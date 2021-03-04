@@ -46,6 +46,7 @@ namespace UVS
 
             btnstart.Enabled = false;
             btnsuspend.Enabled = true;
+            threadcount.Enabled = false;
 
         }
 
@@ -59,6 +60,7 @@ namespace UVS
             btnstart.Enabled = true;
             tbnresume.Enabled = false;
             btnsuspend.Enabled = false;
+            threadcount.Enabled = true;
         }
 
         private int GetThreadCount()
@@ -70,7 +72,6 @@ namespace UVS
             if (count <= 15 && count > 0) return int.Parse(s);
             MessageBox.Show("Thread count is not valid", "Error");
             return 0;
-
 
         }
 
