@@ -10,14 +10,12 @@ namespace UVS
 {
     class Computing : IComputing
     {
-        
         private readonly List<Thread> _threadPool = new List<Thread>();
 
         private IEnumerable<string> Compute()
         {
             while (true)
             {
-
 
                 var rnd = new Random(Guid.NewGuid().GetHashCode());
 
@@ -131,7 +129,7 @@ namespace UVS
         {
             try
             {
-                foreach (var thread in _threadPool.Where(thread => thread.ThreadState == ThreadState.Unstarted))
+                foreach (var thread in _threadPool)
                 {
                     thread?.Start();
                 }
@@ -191,7 +189,7 @@ namespace UVS
                 {
                     if (thread.ThreadState == ThreadState.Suspended)
                     {
-                        thread?.Resume();
+                        thread?.Resume(); // abort neveikia jeigu threado state yra suspended 
                     }
 
                     thread?.Abort();

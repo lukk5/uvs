@@ -67,14 +67,11 @@ namespace UVS
 
             var count = int.Parse(s);
 
-            if (count > 15 || count <= 0)
-            {
-                MessageBox.Show("Thread count is not valid", "Error");
-                return 0;
-            }
+            if (count <= 15 && count > 0) return int.Parse(s);
+            MessageBox.Show("Thread count is not valid", "Error");
+            return 0;
 
 
-            return int.Parse(s);
         }
 
         private void Resume()
